@@ -1,30 +1,46 @@
 <template>
-  <nav>
-    <router-link to="/">Home</router-link> |
-    <router-link to="/about">About</router-link>
-  </nav>
-  <router-view/>
+  <el-button>Default</el-button>
+  <el-button type="primary" @click="handleLogin">测试登录</el-button>
+  <el-button type="danger" @click="handleUserList">测试获取用户请求</el-button>
+
 </template>
 
+
+<script setup>
+
+import request from "@/util/request";
+import store from "@/store";
+import { get, post, fileupload } from "@/util/request";
+const handleLogin = async () => {
+  let result = await request.get("test/login");
+  console.log(result)
+
+  if (result.code = 200) {
+    const token = result.data;
+    console.log("登录成功，token=" + token);
+    store.commit("SET_TOKEN", token);
+  } else {
+    console.log("登录出错");
+  }
+
+}
+const handleUserList = async () => {
+  let result = await get("test/user/list");
+  console.log(result)
+  if (result.code = 200) {
+    const userlist = result.data;
+    console.log("用户信息列表，userList="+userlist);
+  } else {
+    console.log("登录出错");
+  }
+
+}
+
+</script>
+
 <style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-}
 
-nav {
-  padding: 30px;
-}
 
-nav a {
-  font-weight: bold;
-  color: #2c3e50;
-}
-
-nav a.router-link-exact-active {
-  color: #42b983;
-}
 </style>
+
+
