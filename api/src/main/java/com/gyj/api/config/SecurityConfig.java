@@ -1,5 +1,7 @@
 package com.gyj.api.config;
 
+import com.gyj.api.common.security.LoginFailureHandler;
+import com.gyj.api.common.security.LoginSuccessHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -19,7 +21,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     private static final String[] URL_WHITE_LIST = { "/login", "/logout", "/captcha", "/password", "/image/**","/test/**" };
 
-
+    @Autowired
+    private LoginSuccessHandler loginSuccessHandler;
+    @Autowired
+    private LoginFailureHandler loginFailureHandler;
 
     @Override
     public void configure(AuthenticationManagerBuilder auth) throws Exception {
@@ -37,11 +42,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .disable()
             // 登录登出
             .formLogin()
-           /* .successHandler()
-            .failureHandler()
-            .and()
-            .logout()
-            .logoutSuccessHandler()*/
+                .successHandler(loginSuccessHandler)
+                .failureHandler(loginFailureHandler)
+                /*.and()
+                .logout()
+                .logoutSuccessHandler()*/
             // session禁用配置
                  .and()
             .sessionManagement()

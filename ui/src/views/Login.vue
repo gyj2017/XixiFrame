@@ -5,6 +5,7 @@
       <h3 class="title">XixiFrame后台管理系统</h3>
       <el-form-item prop="username">
         <el-input
+            v-model="loginForm.username"
             prefix-icon="User"
             type="text"
             size="large"
@@ -15,6 +16,7 @@
       </el-form-item>
       <el-form-item prop="password">
         <el-input
+            v-model="loginForm.password"
             prefix-icon="Lock"
             type="password"
             size="large"
@@ -44,6 +46,31 @@
 </template>
 
 <script setup>
+import {ref} from 'vue'
+import request from '@/util/request'
+import store from '@/store'
+
+const loginRef = ref(null)
+const loginForm = ref({
+  username: "",
+  password: ""
+})
+
+const loginRules = {
+  username: [{required: true, trigger: "blur", message: "请输入您的账号"}],
+  password: [{required: true, trigger: "blur", message: "请输入您的密码"}]
+};
+
+const handleLogin=()=>{
+  loginRef.value.validate(async (valid)=>{
+    if (valid){
+      await request.post("login?")
+    }else {
+      console.log("验证失败")
+    }
+  })
+}
+
 
 </script>
 

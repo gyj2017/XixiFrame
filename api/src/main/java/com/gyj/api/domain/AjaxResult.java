@@ -10,10 +10,6 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 public class AjaxResult<T> {
-
-
-
-
     private static final long serialVersionUID = 1L;
     private Integer code;
     private String msg;
