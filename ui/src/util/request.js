@@ -14,7 +14,6 @@ request.interceptors.request.use(
     config => {
         // 在请求头中添加JWT Token
         const token = store.getters.GET_TOKEN;
-        alert(token)
         if (token) {
             config.headers.token = token;
         }

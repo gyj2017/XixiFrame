@@ -48,7 +48,9 @@
 <script setup>
 import {ref} from 'vue'
 import request from '@/util/request'
-import store from '@/store'
+import store from '@/store';
+import qs from 'qs'
+import {ElMessage} from "element-plus"
 
 const loginRef = ref(null)
 const loginForm = ref({
@@ -62,10 +64,17 @@ const loginRules = {
 };
 
 const handleLogin=()=>{
-  loginRef.value.validate(async (valid)=>{
-    if (valid){
-      await request.post("login?")
-    }else {
+  loginRef.value.validate(async (valid)=> {
+    if (valid) {
+      let result = await request.post("login?" + qs.stringify(loginForm.value))
+      if (result.code == 200) {
+        const token = result.data.authorization
+        store.commit('SET_TOKEN', token)
+      } else {
+        ElMessage.error("用户名密码错误")
+      }
+      console.log(result)
+    } else {
       console.log("验证失败")
     }
   })

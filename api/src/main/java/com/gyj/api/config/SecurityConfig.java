@@ -27,14 +27,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private LoginFailureHandler loginFailureHandler;
 
     @Override
-    public void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.inMemoryAuthentication()
-                .withUser("user").password("{noop}password").roles("USER")
-                .and()
-                .withUser("admin").password("{noop}password").roles("USER", "ADMIN");
-    }
-
-    @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.cors()
                 .and()
