@@ -51,6 +51,7 @@ import request from '@/util/request'
 import store from '@/store';
 import qs from 'qs'
 import {ElMessage} from "element-plus"
+import router from "@/router";
 
 const loginRef = ref(null)
 const loginForm = ref({
@@ -70,6 +71,7 @@ const handleLogin=()=>{
       if (result.code == 200) {
         const token = result.data.authorization
         store.commit('SET_TOKEN', token)
+        router.replace("/")
       } else {
         ElMessage.error("用户名密码错误")
       }

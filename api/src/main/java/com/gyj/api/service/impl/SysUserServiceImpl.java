@@ -1,5 +1,6 @@
 package com.gyj.api.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.gyj.api.domain.SysUser;
 import com.gyj.api.service.SysUserService;
@@ -15,6 +16,10 @@ import org.springframework.stereotype.Service;
 public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser>
     implements SysUserService{
 
+    @Override
+    public SysUser getByUserName(String username) {
+        return getOne(new QueryWrapper<SysUser>().eq("username", username));
+    }
 }
 
 

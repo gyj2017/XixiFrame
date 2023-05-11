@@ -1,8 +1,11 @@
 package com.gyj.api.config;
 
+import com.gyj.api.common.security.JwtAuthenticationFilter;
 import com.gyj.api.common.security.LoginFailureHandler;
 import com.gyj.api.common.security.LoginSuccessHandler;
+import com.gyj.api.common.security.MyUserDetailsServiceImp;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
@@ -10,6 +13,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 /**
  * @author gaoyijie
@@ -25,6 +29,29 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private LoginSuccessHandler loginSuccessHandler;
     @Autowired
     private LoginFailureHandler loginFailureHandler;
+    @Autowired
+    private MyUserDetailsServiceImp myUserDetailsService;
+
+
+    @Override
+    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+       auth.userDetailsService(myUserDetailsService);
+    }
+
+
+    /**
+     * 密码加密
+     * @return
+     */
+    @Bean
+    BCryptPasswordEncoder bCryptPasswordEncoder(){
+        return new BCryptPasswordEncoder();
+    }
+
+    @Bean
+    JwtAuthenticationFilter jwtAuthenticationFilter() throws Exception {
+        return new JwtAuthenticationFilter(authenticationManager());
+    }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
@@ -49,8 +76,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             // 认证
                 .antMatchers(URL_WHITE_LIST).permitAll()
             // 放行
-                .anyRequest().authenticated();
+                .anyRequest().authenticated()
+                .and()
             // 异常处理配置
-            // 自定义处理配置
+            // 自定义过滤器配置
+            .addFilter(jwtAuthenticationFilter());
+
     }
 }
