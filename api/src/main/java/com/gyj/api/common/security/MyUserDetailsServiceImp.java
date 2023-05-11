@@ -38,7 +38,7 @@ public class MyUserDetailsServiceImp implements UserDetailsService {
     }
 
 
-    private List<GrantedAuthority> getUserAuthority() {
+    public List<GrantedAuthority> getUserAuthority() {
         return new ArrayList<>();
     }
 }
