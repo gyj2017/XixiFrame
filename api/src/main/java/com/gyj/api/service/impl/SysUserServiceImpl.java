@@ -54,7 +54,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser>
         Set<String> menuCodeSet = new HashSet<>();
         for (SysRole role : roleList) {
             List<SysMenu> menuList = sysMenuMapper.selectList(new QueryWrapper<SysMenu>().inSql("id", "SELECT menu_id FROM sys_role_menu WHERE role_id = " + role.getId()));
-            if (menuList.size() <= 0){
+            if (menuList.size() == 0){
                 continue;
             }
             for (SysMenu menu : menuList){
