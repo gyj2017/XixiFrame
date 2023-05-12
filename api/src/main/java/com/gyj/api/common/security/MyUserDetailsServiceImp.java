@@ -6,6 +6,7 @@ import com.gyj.api.domain.SysUser;
 import com.gyj.api.service.SysUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -34,11 +35,12 @@ public class MyUserDetailsServiceImp implements UserDetailsService {
             throw new UserAccountLockException("该用户账号被封禁，具体请联系管理员");
         }
 
-        return new User(sysUser.getUsername(), sysUser.getPassword(), getUserAuthority());
+        return new User(sysUser.getUsername(), sysUser.getPassword(), getUserAuthority(sysUser.getId()));
     }
 
-
-    public List<GrantedAuthority> getUserAuthority() {
-        return new ArrayList<>();
+    public List<GrantedAuthority> getUserAuthority(Long userId) {
+        // 格式 ROLE_admin, system:role:delete
+        String authority = sysUserService.getUserAuthorityInfo(userId);
+        return AuthorityUtils.commaSeparatedStringToAuthorityList(authority);
     }
 }

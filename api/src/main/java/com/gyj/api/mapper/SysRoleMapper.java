@@ -2,6 +2,7 @@ package com.gyj.api.mapper;
 
 import com.gyj.api.domain.SysRole;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import org.springframework.stereotype.Component;
 
 /**
 * @author xixihaha
