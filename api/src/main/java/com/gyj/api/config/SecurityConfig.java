@@ -1,9 +1,6 @@
 package com.gyj.api.config;
 
-import com.gyj.api.common.security.JwtAuthenticationFilter;
-import com.gyj.api.common.security.LoginFailureHandler;
-import com.gyj.api.common.security.LoginSuccessHandler;
-import com.gyj.api.common.security.MyUserDetailsServiceImp;
+import com.gyj.api.common.security.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -23,7 +20,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
-    private static final String[] URL_WHITE_LIST = { "/login", "/logout", "/captcha", "/password", "/image/**","/test/**" };
+    private static final String[] URL_WHITE_LIST = { "/login", "/logout", "/captcha", "/password", "/image/**" };
 
     @Autowired
     private LoginSuccessHandler loginSuccessHandler;
@@ -31,8 +28,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private LoginFailureHandler loginFailureHandler;
     @Autowired
     private MyUserDetailsServiceImp myUserDetailsService;
-
-
+    @Autowired
+    private JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
+    @Autowired
+    private JwtLogoutSuccessHandler jwtLogoutSuccessHandler;
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
        auth.userDetailsService(myUserDetailsService);
@@ -63,9 +62,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             .formLogin()
                 .successHandler(loginSuccessHandler)
                 .failureHandler(loginFailureHandler)
-                /*.and()
+                .and()
                 .logout()
-                .logoutSuccessHandler()*/
+                .logoutSuccessHandler(jwtLogoutSuccessHandler)
             // session禁用配置
                  .and()
             .sessionManagement()
@@ -79,6 +78,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .anyRequest().authenticated()
                 .and()
             // 异常处理配置
+                .exceptionHandling()
+                .authenticationEntryPoint(jwtAuthenticationEntryPoint)
+                .and()
             // 自定义过滤器配置
             .addFilter(jwtAuthenticationFilter());
 

@@ -12,6 +12,7 @@ const request = axios.create({
 // 请求拦截器
 request.interceptors.request.use(
     config => {
+
         // 在请求头中添加JWT Token
         const token = store.getters.GET_TOKEN;
         if (token) {

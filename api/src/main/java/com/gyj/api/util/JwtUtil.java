@@ -1,9 +1,7 @@
 package com.gyj.api.util;
 
 import com.gyj.api.constant.JwtConstant;
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.*;
 
 import java.util.Date;
 import java.util.HashMap;
@@ -40,5 +38,34 @@ public class JwtUtil {
                 .parseClaimsJws(token)
                 .getBody();
         return claims.getSubject();
+    }
+
+    /**
+     * 验证 JWT Token 是否有效
+     *
+     * @param token JWT Token
+     * @return true: 有效；false：无效
+     */
+    public static boolean validateToken(String token) {
+        try {
+            // 解析 JWT Token
+            Jws<Claims> claims = Jwts.parser().setSigningKey(JwtConstant.JWT_SECRET_KEY).parseClaimsJws(token);
+            String userId = claims.getBody().getSubject();
+            Date expiration = claims.getBody().getExpiration();
+
+            // 检查过期时间
+            if (expiration.before(new Date())) {
+                return false;
+            }
+
+            // TODO: 进行其他自定义验证
+
+            // 验证通过返回 true
+            return true;
+
+        } catch (JwtException | IllegalArgumentException e) {
+            // 如果发生异常则认为无效
+            return false;
+        }
     }
 }

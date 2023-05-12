@@ -40,5 +40,12 @@ public class LoginSuccessHandler implements AuthenticationSuccessHandler {
 
     }
 
+    public static void main(String[] args) {
+        String token = JwtUtil.generateToken("admin");
+        System.out.println(token);
+        token = JwtUtil.generateToken("admin");
+        System.out.println(token);
+    }
+
 
 }

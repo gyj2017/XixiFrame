@@ -11,6 +11,7 @@ import io.jsonwebtoken.JwtException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 
 import javax.servlet.FilterChain;
@@ -42,13 +43,15 @@ public class JwtAuthenticationFilter extends BasicAuthenticationFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws IOException, ServletException {
         String token = request.getHeader("token");
         System.out.println("请求url:" + request.getRequestURI());
+        System.out.println(token);
         // token为空或者url在白名单里面，则放行
         if (StrUtil.isEmpty(token) || new ArrayList<String>(Arrays.asList(URL_WHITE_LIST)).contains(request.getRequestURI())) {
             chain.doFilter(request, response);
             return;
         }
 
-        boolean res = JWTUtil.verify(token, JwtConstant.JWT_SECRET_KEY.getBytes(StandardCharsets.UTF_8));
+        boolean res = JwtUtil.validateToken(token);
+        System.out.println(res);
         if (!res) {
             throw new JwtException("token验证失败");
         }
@@ -57,7 +60,8 @@ public class JwtAuthenticationFilter extends BasicAuthenticationFilter {
         SysUser sysUser = sysUserService.getByUserName(username);
         UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(username, null, myUserDetailsService.getUserAuthority());
 
-
+        SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
+        chain.doFilter(request, response);
 
     }
 }

@@ -25,6 +25,7 @@ public class TestController {
     @RequestMapping("/user/list")
     public AjaxResult userList(@RequestHeader(required = false)String token){
 
+        System.out.println(token);
         if (ObjectUtil.isNotEmpty(token)){
             List<SysUser> userList = sysUserService.list();
             System.out.println(userList);
