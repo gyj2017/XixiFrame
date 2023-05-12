@@ -31,13 +31,5 @@ public class JwtLogoutSuccessHandler implements LogoutSuccessHandler {
         outputStream.write(JSONUtil.toJsonStr(result).getBytes());
         outputStream.flush();
         outputStream.close();
-
-
-
-
-
-
-
-
     }
 }

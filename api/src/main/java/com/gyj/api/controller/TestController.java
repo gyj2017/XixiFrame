@@ -41,6 +41,7 @@ public class TestController {
     @RequestMapping("/login")
     public AjaxResult<String> login(){
         String token = JwtUtil.generateToken("6666");
+        System.out.println("111111111111111111111");
         return AjaxResult.success("请求成功", token);
     }
 
