@@ -13,12 +13,7 @@ import lombok.Data;
  */
 @TableName(value ="sys_user_role")
 @Data
-public class SysUserRole implements Serializable {
-    /**
-     * 用户角色主键ID
-     */
-    @TableId(value = "id", type = IdType.AUTO)
-    private Long id;
+public class SysUserRole extends BaseEntity {
 
     /**
      * 用户ID
@@ -32,6 +27,4 @@ public class SysUserRole implements Serializable {
     @TableField(value = "role_id")
     private Long roleId;
 
-    @TableField(exist = false)
-    private static final long serialVersionUID = 1L;
 }

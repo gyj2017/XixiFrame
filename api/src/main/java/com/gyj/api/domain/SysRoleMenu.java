@@ -13,12 +13,7 @@ import lombok.Data;
  */
 @TableName(value ="sys_role_menu")
 @Data
-public class SysRoleMenu implements Serializable {
-    /**
-     * 角色菜单主键ID
-     */
-    @TableId(value = "id", type = IdType.AUTO)
-    private Long id;
+public class SysRoleMenu extends BaseEntity {
 
     /**
      * 角色ID
@@ -32,6 +27,4 @@ public class SysRoleMenu implements Serializable {
     @TableField(value = "menu_id")
     private Long menuId;
 
-    @TableField(exist = false)
-    private static final long serialVersionUID = 1L;
 }
