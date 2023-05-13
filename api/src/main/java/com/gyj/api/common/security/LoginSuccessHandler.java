@@ -76,6 +76,8 @@ public class LoginSuccessHandler implements AuthenticationSuccessHandler {
         // 转菜单树
         List<SysMenu> treeMenuList = menuService.buildTreeMenu(menuList);
         map.put("menuList", treeMenuList);
+
+        map.put("userInfo", currentUser);
         AjaxResult result = AjaxResult.success("登录成功", map);
         outputStream.write(JSONUtil.toJsonStr(result).getBytes());
         outputStream.flush();

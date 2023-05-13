@@ -2,10 +2,11 @@ import axios from 'axios';
 import store from '@/store';
 
 const TOKEN_KEY = 'jwt_token'; // 保存在本地存储中的JWT Token的Key
+let baseUrl = "http://localhost:8080";
 
 // 创建一个axios实例
 const request = axios.create({
-    baseURL: "http://localhost:8080", // API的base_url
+    baseURL: baseUrl, // API的base_url
     timeout: 5000 // 请求超时时间
 });
 
@@ -83,5 +84,9 @@ export function fileupload(url, data = {}) {
             });
     });
 }
+export function getServerUrl(){
+    return baseUrl;
+}
+
 
 export default request;
