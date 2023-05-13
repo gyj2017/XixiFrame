@@ -26,7 +26,7 @@
         >
         </el-input>
       </el-form-item>
-      <el-checkbox style="margin:0px 0px 25px 0px;">记住密码</el-checkbox>
+      <el-checkbox v-model="loginForm.rememberMe" style="margin:0px 0px 25px 0px;">记住密码</el-checkbox>
       <el-form-item style="width:100%;">
         <el-button
             size="large"
@@ -52,11 +52,16 @@ import store from '@/store';
 import qs from 'qs'
 import {ElMessage} from "element-plus"
 import router from "@/router";
+import Cookies from "js-cookie"
+import {encrypt, decrypt} from "@/util/jsencrypt"
+
+
 
 const loginRef = ref(null)
 const loginForm = ref({
   username: "",
-  password: ""
+  password: "",
+  rememberMe: false
 })
 
 const loginRules = {
@@ -67,6 +72,15 @@ const loginRules = {
 const handleLogin=()=>{
   loginRef.value.validate(async (valid)=> {
     if (valid) {
+      if (loginForm.value.rememberMe){
+        Cookies.set("username", loginForm.value.username, {expires: 30})
+        Cookies.set("password", encrypt(loginForm.value.password))
+        Cookies.set("rememberMe", loginForm.value.rememberMe, {expires: 30})
+      }else {
+        Cookies.remove("username")
+        Cookies.remove("password")
+        Cookies.remove("rememberMe")
+      }
       let result = await request.post("login?" + qs.stringify(loginForm.value))
       if (result.code == 200) {
         const token = result.data.authorization
@@ -82,7 +96,20 @@ const handleLogin=()=>{
   })
 }
 
+function getCookie(){
+  const username = Cookies.get("username");
+  const password = Cookies.get("password");
+  const rememberMe = Cookies.get("rememberMe");
 
+  loginForm.value = {
+    username: username === undefined? loginForm.value.username : username,
+    password: password === undefined? loginForm.value.password : decrypt(password),
+    rememberMe: rememberMe === undefined? false : Boolean(rememberMe)
+  }
+
+}
+
+getCookie()
 </script>
 
 <style lang="scss" scoped>
