@@ -6,6 +6,7 @@ import com.gyj.api.domain.SysUser;
 import com.gyj.api.service.SysUserService;
 import com.gyj.api.util.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -23,6 +24,8 @@ public class TestController {
 
 
     @RequestMapping("/user/list")
+    //@PreAuthorize("hasRole('ROLE_admin1')")
+    @PreAuthorize("hasAuthority('system:user:list')")
     public AjaxResult userList(@RequestHeader(required = false)String token){
 
         System.out.println(token);
