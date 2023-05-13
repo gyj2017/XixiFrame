@@ -84,7 +84,10 @@ const handleLogin=()=>{
       let result = await request.post("login?" + qs.stringify(loginForm.value))
       if (result.code == 200) {
         const token = result.data.authorization
+        const menuList = result.data.menuList
+        console.log("menulist="+menuList)
         store.commit("SET_TOKEN", token)
+        store.commit("SET_MENU_LIST", menuList)
         router.replace("/")
       } else {
         ElMessage.error("用户名密码错误")
