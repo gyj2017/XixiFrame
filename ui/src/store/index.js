@@ -2,6 +2,7 @@ import { createStore } from 'vuex'
 import router from "@/router";
 export default createStore({
   state: {
+    hasRouters:false
   },
   getters: {
     GET_TOKEN:state =>{
@@ -23,6 +24,9 @@ export default createStore({
     },
     SET_USER_INFO:(state, userInfo)=>{
       sessionStorage.setItem("userInfo", JSON.stringify(userInfo))
+    },
+    SET_ROUTES_STATE:(state, hasRoutes)=>{
+      state.hasRouters = hasRoutes
     }
   },
   actions: {

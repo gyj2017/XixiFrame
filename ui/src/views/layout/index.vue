@@ -12,7 +12,11 @@
       <el-aside width="200px" class="sidebar-container"><Menu/></el-aside>
       <el-container>
         <el-header><Header/></el-header>
-        <el-main><Tabs/></el-main>
+        <el-main>
+          <Tabs/>
+          <router-view/>
+
+        </el-main>
         <el-footer><Footer/></el-footer>
       </el-container>
     </el-container>
