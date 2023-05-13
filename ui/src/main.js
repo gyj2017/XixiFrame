@@ -7,7 +7,7 @@ import store from './store'
 import '@/assets/styles/border.css'
 import '@/assets/styles/reset.css'
 import * as ElementPlusIconsVue from '@element-plus/icons-vue'
-
+import '@/router/permission.js'
 
 const app = createApp(App)
 app.use(store).use(router).use(ElementPlus).mount('#app')
