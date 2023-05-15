@@ -30,6 +30,8 @@ const avatarUrl = getServerUrl() +'/image/userAvatar/'+currentUser.value.avatar;
 const logout =async () => {
   let result = await request.get("/logout");
   if (result.code == 200){
+    store.commit('SET_ROUTES_STATE', false)
+    store.commit('RESET_TABS')
     store.dispatch('logout')
   }
 }
