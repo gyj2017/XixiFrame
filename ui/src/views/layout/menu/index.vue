@@ -3,7 +3,7 @@
       active-text-color="#ffd04b"
       background-color="#2d3a4b"
       class="el-menu-vertical-demo"
-      default-active="/index"
+      :default-active="activeIndex"
       text-color="#fff"
       router
   >
@@ -28,13 +28,26 @@
 import {Menu as IconMenu,} from '@element-plus/icons-vue'
 import HomeView from "@/views/HomeView";
 import {HomeFilled,User,Tickets,Goods,DocumentAdd,Management,Setting,Edit,SwitchButton,Promotion} from '@element-plus/icons-vue'
-import {ref} from 'vue'
+import {ref, watch} from 'vue'
 import store from '@/store'
 const menuList = ref(store.getters.GET_MENU_LIST)
 
 const openTab=(item)=>{
   store.commit('ADD_TABS', item);
 }
+
+const activeIndex = ref("/index")
+
+watch(store.state, ()=>{
+  console.log("editabletabsValue="+ store.state.editableTabsValue)
+  activeIndex.value = store.state.editableTabsValue
+}, {deep: true, immediate: true})
+
+
+
+
+
+
 
 
 </script>
