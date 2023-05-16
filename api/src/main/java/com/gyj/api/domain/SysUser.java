@@ -46,6 +46,12 @@ public class SysUser extends BaseEntity {
     /**
      *
      */
+    @TableField(value = "email")
+    private String email;
+
+    /**
+     *
+     */
     @TableField(value = "login_date")
     private Date loginDate;
 
@@ -54,5 +60,20 @@ public class SysUser extends BaseEntity {
      */
     @TableField(value = "status")
     private Integer status;
+
+
+
+    /**
+     * 所属角色，多个角色逗号隔开
+     */
+    @TableField(exist = false)
+    private String roles;
+
+    @TableField(exist = false)
+    private String oldPassword;
+
+    @TableField(exist = false)
+    private String newPassword;
+
 
 }

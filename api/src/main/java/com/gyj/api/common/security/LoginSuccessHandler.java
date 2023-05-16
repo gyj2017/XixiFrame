@@ -69,6 +69,8 @@ public class LoginSuccessHandler implements AuthenticationSuccessHandler {
             }
         }
 
+        currentUser.setRoles(roleList.stream().map(i->i.getName()).collect(Collectors.joining(",")));
+
         List<SysMenu> menuList = new ArrayList<>(menuSet);
         // 排序
         menuList.sort(Comparator.comparing(SysMenu::getOrderNum));
@@ -78,6 +80,8 @@ public class LoginSuccessHandler implements AuthenticationSuccessHandler {
         map.put("menuList", treeMenuList);
 
         map.put("userInfo", currentUser);
+
+        System.out.println(currentUser);
         AjaxResult result = AjaxResult.success("登录成功", map);
         outputStream.write(JSONUtil.toJsonStr(result).getBytes());
         outputStream.flush();

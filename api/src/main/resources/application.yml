@@ -36,3 +36,5 @@ spring:
     timeout: 10s
     # 是否开启ssl
     ssl: false
+
+avatarImagesFilePath: D://local//XixiFrame//uploadPath//userAvatar//
