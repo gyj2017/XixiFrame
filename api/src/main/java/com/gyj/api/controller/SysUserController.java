@@ -2,7 +2,9 @@ package com.gyj.api.controller;
 
 
 import cn.hutool.core.io.FileUtil;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.gyj.api.domain.AjaxResult;
+import com.gyj.api.domain.PageBean;
 import com.gyj.api.domain.SysUser;
 import com.gyj.api.service.SysUserService;
 import com.gyj.api.util.DateUtil;
@@ -20,6 +22,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -119,5 +122,23 @@ public class SysUserController {
         return AjaxResult.success();
     }
 
+    /**
+     * 根据条件分页查询用户信息
+     * @param pageBean
+     * @return
+     */
+    @PostMapping("/list")
+    @PreAuthorize("hasAuthority('system:user:query')")
+    public AjaxResult list(@RequestBody PageBean pageBean){
+        Page<SysUser> pageResult = sysUserService.page(new Page<>(pageBean.getPageNum(), pageBean.getPageSize()));
+        List<SysUser> userList = pageResult.getRecords();
+        Map<String, Object> resultMap = new HashMap<>();
+        resultMap.put("userList", userList);
+        resultMap.put("total", pageResult.getTotal());
+        return AjaxResult.success(resultMap);
+
+
+
+    }
 
 }
