@@ -2,16 +2,16 @@ package com.gyj.api.domain;
 
 /**
  * 分页Model类
+ *
  * @author java1234_小锋
  * @site www.java1234.com
  * @company Java知识分享网
  * @create 2020-02-16 上午 11:05
  */
 public class PageBean {
-
-
     private int pageNum; // 第几页
     private int pageSize; // 每页记录数
+
     private int start;  // 起始页
     private String query; // 查询参数
 
@@ -47,7 +47,7 @@ public class PageBean {
     }
 
     public int getStart() {
-        return (pageNum-1)*pageSize;
+        return (pageNum - 1) * pageSize;
     }
 
     public String getQuery() {

@@ -130,6 +130,8 @@ public class SysUserController {
     @PostMapping("/list")
     @PreAuthorize("hasAuthority('system:user:query')")
     public AjaxResult list(@RequestBody PageBean pageBean){
+
+
         Page<SysUser> pageResult = sysUserService.page(new Page<>(pageBean.getPageNum(), pageBean.getPageSize()));
         List<SysUser> userList = pageResult.getRecords();
         Map<String, Object> resultMap = new HashMap<>();
