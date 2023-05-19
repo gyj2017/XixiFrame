@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 public class GlobalExceptionHandler {
     @ExceptionHandler(value = RuntimeException.class)
     public AjaxResult handler(RuntimeException e) {
-        log.error("运行时异常--------{}" + e.getMessage());
+        e.printStackTrace();
         return AjaxResult.error(e.getMessage());
     }
 

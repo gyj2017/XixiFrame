@@ -71,12 +71,6 @@ watch(store.state, ()=>{
 
 </script>
 <style lang="scss">
-.demo-tabs > .el-tabs__content{
-  padding: 32px;
-  color: #6b778c;
-  font-size: 32px;
-  font-weight: 600;
-}
 
 .el-main{
   padding:4px 0;
@@ -84,5 +78,9 @@ watch(store.state, ()=>{
 
 .el-tabs--card > .el-tabs__header .el-tabs__nav{
   border-radius: 0;
+}
+
+.app-container{
+  padding: 20px;
 }
 </style>

@@ -2,10 +2,15 @@ package com.gyj.api.controller;
 
 
 import cn.hutool.core.io.FileUtil;
+import cn.hutool.core.util.StrUtil;
+import cn.hutool.json.JSONUtil;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.gyj.api.domain.AjaxResult;
 import com.gyj.api.domain.PageBean;
+import com.gyj.api.domain.SysRole;
 import com.gyj.api.domain.SysUser;
+import com.gyj.api.service.SysRoleService;
 import com.gyj.api.service.SysUserService;
 import com.gyj.api.util.DateUtil;
 import org.apache.commons.io.FileUtils;
@@ -38,6 +43,8 @@ public class SysUserController {
     @Autowired
     private BCryptPasswordEncoder bCryptPasswordEncoder;
 
+    @Autowired
+    private SysRoleService sysRoleService;
     @Value("${avatarImagesFilePath}")
     private String avatarImagesFilePath;
 
@@ -46,9 +53,9 @@ public class SysUserController {
     @PreAuthorize("hasAuthority('system:user:add')" + "||" + "hasAuthority('system:user:edit')")
     public AjaxResult save(@RequestBody SysUser sysUser) {
 
-        if (sysUser.getId() == null || sysUser.getId() == -1){
+        if (sysUser.getId() == null || sysUser.getId() == -1) {
             return AjaxResult.error();
-        }else {
+        } else {
             sysUser.setUpdateTime(new Date());
             sysUserService.updateById(sysUser);
         }
@@ -60,48 +67,48 @@ public class SysUserController {
     @PreAuthorize("hasAuthority('system:user:edit')")
     public AjaxResult updateUserPwd(@RequestBody SysUser sysUser) {
 
-        if (sysUser.getId() == null || sysUser.getId() == -1){
+        if (sysUser.getId() == null || sysUser.getId() == -1) {
             return AjaxResult.error();
         }
 
         SysUser curUser = sysUserService.getById(sysUser.getId());
-        if (bCryptPasswordEncoder.matches(sysUser.getOldPassword(), curUser.getPassword())){
+        if (bCryptPasswordEncoder.matches(sysUser.getOldPassword(), curUser.getPassword())) {
 
             String newPwd = bCryptPasswordEncoder.encode(sysUser.getNewPassword());
             curUser.setPassword(newPwd);
             curUser.setUpdateTime(new Date());
             sysUserService.updateById(curUser);
             return AjaxResult.success();
-        }else {
+        } else {
             return AjaxResult.error("旧密码不匹配");
         }
     }
 
 
-
     /**
      * 上传用户头像图片
+     *
      * @param file
      * @return
      * @throws Exception
      */
     @RequestMapping("/uploadImage")
     @PreAuthorize("hasAuthority('system:user:edit')")
-    public AjaxResult uploadImage(MultipartFile file)throws Exception{
-        Map<String,Object> resultMap=new HashMap<>();
-        if(!file.isEmpty()){
+    public AjaxResult uploadImage(MultipartFile file) throws Exception {
+        Map<String, Object> resultMap = new HashMap<>();
+        if (!file.isEmpty()) {
             // 获取文件名
             String originalFilename = file.getOriginalFilename();
-            String suffixName=originalFilename.substring(originalFilename.lastIndexOf("."));
-            String newFileName= DateUtil.getCurrentDateStr()+suffixName;
-            FileUtils.copyInputStreamToFile(file.getInputStream(),new File(avatarImagesFilePath+newFileName));
+            String suffixName = originalFilename.substring(originalFilename.lastIndexOf("."));
+            String newFileName = DateUtil.getCurrentDateStr() + suffixName;
+            FileUtils.copyInputStreamToFile(file.getInputStream(), new File(avatarImagesFilePath + newFileName));
 
-            Map<String,Object> dataMap = new HashMap<>();
-            dataMap.put("title",newFileName);
-            dataMap.put("src","/image/userAvatar/"+newFileName);
+            Map<String, Object> dataMap = new HashMap<>();
+            dataMap.put("title", newFileName);
+            dataMap.put("src", "/image/userAvatar/" + newFileName);
             return AjaxResult.success("上传成功", dataMap);
 
-        }else {
+        } else {
             return AjaxResult.error("文件为空，请检查");
         }
     }
@@ -109,12 +116,13 @@ public class SysUserController {
 
     /**
      * 修改用户头像
+     *
      * @param sysUser
      * @return
      */
     @RequestMapping("/updateAvatar")
     @PreAuthorize("hasAuthority('system:user:edit')")
-    public AjaxResult updateAvatar(@RequestBody SysUser sysUser){
+    public AjaxResult updateAvatar(@RequestBody SysUser sysUser) {
         SysUser currentUser = sysUserService.getById(sysUser.getId());
         currentUser.setUpdateTime(new Date());
         currentUser.setAvatar(sysUser.getAvatar());
@@ -124,21 +132,28 @@ public class SysUserController {
 
     /**
      * 根据条件分页查询用户信息
+     *
      * @param pageBean
      * @return
      */
     @PostMapping("/list")
     @PreAuthorize("hasAuthority('system:user:query')")
-    public AjaxResult list(@RequestBody PageBean pageBean){
+    public AjaxResult list(@RequestBody PageBean pageBean) {
 
 
-        Page<SysUser> pageResult = sysUserService.page(new Page<>(pageBean.getPageNum(), pageBean.getPageSize()));
+        String query = pageBean.getQuery().trim();
+        Page<SysUser> pageResult = sysUserService.page(new Page<>(pageBean.getPageNum(), pageBean.getPageSize()), new QueryWrapper<SysUser>().like(StrUtil.isNotEmpty(query), "username", query));
         List<SysUser> userList = pageResult.getRecords();
+        System.out.println(JSONUtil.toJsonStr(userList));
+        for (SysUser user : userList) {
+            List<SysRole> roleList = sysRoleService.list(new QueryWrapper<SysRole>().inSql("id", "select role_id from sys_user_role where user_id = " + user.getId()));
+            user.setSysRoleList(roleList);
+        }
+
         Map<String, Object> resultMap = new HashMap<>();
         resultMap.put("userList", userList);
         resultMap.put("total", pageResult.getTotal());
         return AjaxResult.success(resultMap);
-
 
 
     }
